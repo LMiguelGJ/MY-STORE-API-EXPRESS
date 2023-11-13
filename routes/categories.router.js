@@ -1,13 +1,14 @@
-const express = require("express")
+const express = require('express');
 
 const router = express.Router();
 
-router.get('/:id/products/:productId', (req, res) => {
-  const {id , productId} = req.params;
+router.get('/:categoryId/products/:productId', (req, res) => {
+  const { categoryId, productId } = req.params;
   res.json({
-    id,
-    productId
-  })
+    categoryId,
+    productId,
+  });
 })
+
 
 module.exports = router;

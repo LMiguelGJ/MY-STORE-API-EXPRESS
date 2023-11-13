@@ -1,7 +1,7 @@
-const { json } = require('express');
 const faker = require('faker');
+const boom = require('@hapi/boom')
 
-class ProductServices {
+class ProductsService {
 
   constructor(){
     this.products = [];
@@ -16,53 +16,61 @@ class ProductServices {
         name: faker.commerce.productName(),
         price: parseInt(faker.commerce.price(), 10),
         image: faker.image.imageUrl(),
+        isBlock: faker.datatype.boolean()
       });
     }
   }
 
-  async create(body){
+  async create(data) {
     const newProduct = {
       id: faker.datatype.uuid(),
-      // ...body, podemos usar el split operation
-      name: body.name,
-      price: parseInt(body.price),
-      image: body.image,
+      ...data
     }
     this.products.push(newProduct);
-    return {
-      message: 'created',
-      date: this.products.find(item => item.id == newProduct.id)
+    return newProduct;
+  }
+
+  find() {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(this.products);
+      }, 5000);
+    })
+  }
+
+  async findOne(id) {
+    const product = this.products.find(item => item.id === id);
+    if (!product){
+      throw boom.notFound('product not found');
     }
+    if (product.isBlock) {
+      throw boom.conflict('product es block');
+    }
+    return product;
   }
 
-  async find(){
-    return this.products;
-  }
-
-  async findOne(id){
-    return this.products.find(item => item.id == id);
-  }
-
-  async delete(id){
-    const newProducts = this.products.filter(item => item.id != id);
-    this.products = newProducts;
-    return {id}
-  }
-
-  async update(id, changes){
+  async update(id, changes) {
     const index = this.products.findIndex(item => item.id === id);
     if (index === -1) {
-      throw new Error('product not fount');
-    } else {
-      const product = this.products[index];
-      this.products[index] = {
-        ...product,
-        ...changes
-      };
-      return this.products[index];
+      throw boom.notFound('products no found');
     }
+    const product = this.products[index];
+    this.products[index] = {
+      ...product,
+      ...changes
+    };
+    return this.products[index];
+  }
+
+  async delete(id) {
+    const index = this.products.findIndex(item => item.id === id);
+    if (index === -1) {
+      throw new Error('product not found');
+    }
+    this.products.splice(index, 1);
+    return { id };
   }
 
 }
 
-module.exports = ProductServices;
+module.exports = ProductsService;
