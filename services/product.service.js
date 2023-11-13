@@ -1,4 +1,4 @@
-const faker = require('faker');
+const {faker} = require('@faker-js/faker');
 const boom = require('@hapi/boom')
 
 class ProductsService {
@@ -12,10 +12,10 @@ class ProductsService {
     const limit = 10;
     for (let index = 0; index < limit; index++) {
       this.products.push({
-        id: faker.datatype.uuid(),
+        id: faker.string.uuid(),
         name: faker.commerce.productName(),
         price: parseInt(faker.commerce.price(), 10),
-        image: faker.image.imageUrl(),
+        image: faker.image.url(),
         isBlock: faker.datatype.boolean()
       });
     }
@@ -23,7 +23,7 @@ class ProductsService {
 
   async create(data) {
     const newProduct = {
-      id: faker.datatype.uuid(),
+      id: faker.string.uuid(),
       ...data
     }
     this.products.push(newProduct);
