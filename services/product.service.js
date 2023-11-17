@@ -34,7 +34,7 @@ class ProductsService {
   }
 
   async find() {
-    const query = 'SELECT * FROM public.task ORDER BY id ASC';
+    const query = 'SELECT * FROM public.tasks ORDER BY id ASC';
     const rta = await this.pool.query(query);
     return rta.rows;
   }
