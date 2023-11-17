@@ -57,6 +57,21 @@ router.patch('/:id',
   }
 );
 
+router.put('/:id',
+  validatorHandler(getUserSchema, 'params'),
+  validatorHandler(updateUserSchema, 'body'),
+  async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const body = req.body;
+      const category = await service.update(id, body);
+      res.json(category);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
 router.delete('/:id',
   validatorHandler(getUserSchema, 'params'),
   async (req, res, next) => {
