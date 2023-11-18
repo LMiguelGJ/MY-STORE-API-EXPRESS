@@ -8,6 +8,9 @@ module.exports = {
     develomet: {
         url: URI,
         dialect: 'postgres',
-        
+    },
+    production: {
+        url: URI,
+        dialect: 'postgres',
     }
 };
