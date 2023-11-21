@@ -1,42 +1,40 @@
 const {faker} = require('@faker-js/faker');
 const boom = require('@hapi/boom')
 const pool = require('../libs/postgres.pool')
+const {models} = require('./../libs/sequelize')
 
 class ProductsService {
 
   constructor(){
-    this.products = [];
-    this.generate();
+    // this.products = [];
+    // this.generate();
     this.pool = pool;
     this.pool.on('error', (err)=> console.error(err));
   }
 
-  generate() {
-    const limit = 10;
-    for (let index = 0; index < limit; index++) {
-      this.products.push({
-        id: faker.string.uuid(),
-        name: faker.commerce.productName(),
-        price: parseInt(faker.commerce.price(), 10),
-        image: faker.image.url(),
-        isBlock: faker.datatype.boolean()
-      });
-    }
-  }
+  // generate() {
+  //   const limit = 10;
+  //   for (let index = 0; index < limit; index++) {
+  //     this.products.push({
+  //       id: faker.string.uuid(),
+  //       name: faker.commerce.productName(),
+  //       price: parseInt(faker.commerce.price(), 10),
+  //       image: faker.image.url(),
+  //       isBlock: faker.datatype.boolean()
+  //     });
+  //   }
+  // }
 
   async create(data) {
-    const newProduct = {
-      id: faker.string.uuid(),
-      ...data
-    }
-    this.products.push(newProduct);
+    const newProduct = await models.Product.create(data);
     return newProduct;
   }
 
   async find() {
-    const query = 'SELECT * FROM public.tasks ORDER BY id ASC';
-    const rta = await this.pool.query(query);
-    return rta.rows;
+    const rta = await models.Product.findAll({
+      include: ['category']
+    });
+    return rta;
   }
 
   async findOne(id) {
