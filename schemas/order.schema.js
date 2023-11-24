@@ -4,7 +4,7 @@ const customerId = Joi.number().integer();
 const id = Joi.number().integer();
 
 const getOrderSchema = Joi.object({
-  id: id.require(),
+  id: id.required(),
 })
 
 const createOrderSchema = Joi.object({
