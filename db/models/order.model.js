@@ -1,6 +1,6 @@
 const { Model, DataTypes, Sequelize } = require('sequelize');
 const { CUSTOMER_TABLE } = require('./customer.model');
-const Datatype = require('faker/lib/datatype');
+// const Datatype = require('faker/lib/datatype');
 
 const ORDER_TABLE = 'orders';
 
