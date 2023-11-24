@@ -20,7 +20,7 @@ const OrderProductSchema = {
   },
   amount: {
     allowNull: false,
-    type: DataTypes.INTEGER
+    type: DataTypes.INTEGER,
   },
   orderId: {
     field: 'order_id',
@@ -30,6 +30,9 @@ const OrderProductSchema = {
       model: ORDER_TABLE,
       key: 'id',
     },
+    onUpdate: 'CASCADE',
+    onDelete: 'SET NULL',
+  },
     productId: {
       field: 'product_id',
       allowNull: false,
@@ -41,8 +44,7 @@ const OrderProductSchema = {
       onUpdate: 'CASCADE',
       onDelete: 'SET NULL',
     },
-  },
-};
+  };
 
 class OrderProduct extends Model {
   static associate(models) {
