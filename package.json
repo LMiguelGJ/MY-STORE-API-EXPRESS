@@ -12,6 +12,11 @@
     "migrations:revert": "sequelize-cli db:migrate:undo",
     "migrations:delete": "sequelize-cli db:migrate:undo:all"
   },
+  "nodemonConfig": {
+    "events": {
+      "start":"clear || cls"      
+    }
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",

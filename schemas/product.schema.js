@@ -37,7 +37,10 @@ const queryProductSchema = Joi.object({
     offset,
     price,
     price_min,
-    price_max
-  });
+    price_max: price_max.when(Joi.object({ price_min: Joi.exist() }).unknown(), {
+        then: Joi.number(),
+        otherwise: Joi.required(),
+    })
+});
 
 module.exports = {createproducSchema , updateproducSchema, getproducSchema, queryProductSchema};
