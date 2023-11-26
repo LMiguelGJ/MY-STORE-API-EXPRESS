@@ -10,6 +10,10 @@ const categoryId = Joi.number().integer();
 const limit = Joi.number().integer();
 const offset = Joi.number().integer();
 
+const price_min = Joi.number().integer();
+const price_max = Joi.number().integer();
+
+
 const createproducSchema = Joi.object({
     name: name.required(),
     price: price.required(),
@@ -30,7 +34,10 @@ const getproducSchema = Joi.object({
 
 const queryProductSchema = Joi.object({
     limit,
-    offset
+    offset,
+    price,
+    price_min,
+    price_max
   });
 
 module.exports = {createproducSchema , updateproducSchema, getproducSchema, queryProductSchema};
