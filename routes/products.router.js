@@ -1,19 +1,21 @@
 const express = require('express');
 const validatorHandler = require('./../middlewares/validator.handler');
-const { createproducSchema, updateproducSchema, getproducSchema } = require('./../schemas/product.schema')
+const { createproducSchema, updateproducSchema, getproducSchema, queryProductSchema } = require('./../schemas/product.schema')
 const ProductsService = require('./../services/product.service');
 
 const router = express.Router();
 const service = new ProductsService();
 
-router.get('/', async (req, res, next) => {
-  try {
-    const products = await service.find();
-    res.json(products);
-  } catch (error) {
-    next(error);
-  }
-});
+router.get('/',
+  validatorHandler(queryProductSchema, 'query'),
+  async (req, res, next) => {
+    try {
+      const products = await service.find(req.query);
+      res.json(products);
+    } catch (error) {
+      next(error);
+    }
+  });
 
 router.get('/filter', (req, res) => {
   res.send('Yo soy un filter');
@@ -56,27 +58,27 @@ router.patch('/:id',
 
   });
 
-  router.put('/:id',
-    validatorHandler(getproducSchema, 'params'),
-    validatorHandler(updateproducSchema, 'body'),
-    async (req, res) => {
-      try {
-        const { id } = req.params;
-        const body = req.body;
-        const product = await service.update(id, body);
-        res.json(product);
-      } catch (error) {
-        res.status(404).json({
-          message: error.message
-        });
-      }
+router.put('/:id',
+  validatorHandler(getproducSchema, 'params'),
+  validatorHandler(updateproducSchema, 'body'),
+  async (req, res) => {
+    try {
+      const { id } = req.params;
+      const body = req.body;
+      const product = await service.update(id, body);
+      res.json(product);
+    } catch (error) {
+      res.status(404).json({
+        message: error.message
+      });
+    }
 
-    });
-
-  router.delete('/:id', async (req, res) => {
-    const { id } = req.params;
-    const rta = await service.delete(id);
-    res.json(rta);
   });
+
+router.delete('/:id', async (req, res) => {
+  const { id } = req.params;
+  const rta = await service.delete(id);
+  res.json(rta);
+});
 
 module.exports = router;
