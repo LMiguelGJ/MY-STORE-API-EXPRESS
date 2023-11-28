@@ -6,8 +6,11 @@ const { updateUserSchema, createUserSchema, getUserSchema } = require('./../sche
 
 const router = express.Router();
 const service = new UserService();
+const passport = require('passport');
 
-router.get('/', async (req, res, next) => {
+router.get('/',
+  passport.authenticate('jwt', {session: false}),
+  async (req, res, next) => {
   try {
     const users = await service.find();
     res.json(users);
@@ -17,6 +20,7 @@ router.get('/', async (req, res, next) => {
 });
 
 router.get('/:id',
+  passport.authenticate('jwt', {session: false}),
   validatorHandler(getUserSchema, 'params'),
   async (req, res, next) => {
     try {
@@ -30,6 +34,7 @@ router.get('/:id',
 );
 
 router.post('/',
+  passport.authenticate('jwt', {session: false}),
   validatorHandler(createUserSchema, 'body'),
   async (req, res, next) => {
     try {
@@ -43,6 +48,7 @@ router.post('/',
 );
 
 router.patch('/:id',
+  passport.authenticate('jwt', {session: false}),
   validatorHandler(getUserSchema, 'params'),
   validatorHandler(updateUserSchema, 'body'),
   async (req, res, next) => {
@@ -58,6 +64,7 @@ router.patch('/:id',
 );
 
 router.put('/:id',
+  passport.authenticate('jwt', {session: false}),
   validatorHandler(getUserSchema, 'params'),
   validatorHandler(updateUserSchema, 'body'),
   async (req, res, next) => {
@@ -73,6 +80,7 @@ router.put('/:id',
 );
 
 router.delete('/:id',
+  passport.authenticate('jwt', {session: false}),
   validatorHandler(getUserSchema, 'params'),
   async (req, res, next) => {
     try {

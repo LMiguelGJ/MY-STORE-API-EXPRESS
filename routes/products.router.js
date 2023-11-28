@@ -5,6 +5,8 @@ const ProductsService = require('./../services/product.service');
 
 const router = express.Router();
 const service = new ProductsService();
+const passport = require('passport');
+
 
 router.get('/',
   validatorHandler(queryProductSchema, 'query'),
@@ -22,6 +24,7 @@ router.get('/filter', (req, res) => {
 });
 
 router.get('/:id',
+  passport.authenticate('jwt', {session: false}),
   validatorHandler(getproducSchema, 'params'),
   async (req, res, next) => {
     try {
@@ -34,6 +37,7 @@ router.get('/:id',
   });
 
 router.post('/',
+  passport.authenticate('jwt', {session: false}),
   validatorHandler(createproducSchema, 'body'),
   async (req, res) => {
     const body = req.body;
@@ -42,6 +46,7 @@ router.post('/',
   });
 
 router.patch('/:id',
+  passport.authenticate('jwt', {session: false}),
   validatorHandler(getproducSchema, 'params'),
   validatorHandler(updateproducSchema, 'body'),
   async (req, res) => {
@@ -59,6 +64,7 @@ router.patch('/:id',
   });
 
 router.put('/:id',
+  passport.authenticate('jwt', {session: false}),
   validatorHandler(getproducSchema, 'params'),
   validatorHandler(updateproducSchema, 'body'),
   async (req, res) => {
@@ -75,7 +81,9 @@ router.put('/:id',
 
   });
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id',
+  passport.authenticate('jwt', {session: false}),
+  async (req, res) => {
   const { id } = req.params;
   const rta = await service.delete(id);
   res.json(rta);
