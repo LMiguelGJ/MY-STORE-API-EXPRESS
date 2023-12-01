@@ -35,11 +35,26 @@ class AuthService {
     };
   }
 
-  async sendMail(email){
+  async SendRecovery(email){
     const user = await service.findByEmail(email);
     if (!user) {
       throw boom.unauthorized();
     }
+    const payload = {sub: user.id };
+    const token = jwt.sign(payload, config.jwtSecret, {expiresIn: '15min'});
+    const link = `http://myfrontend.com/recobery?token=${token}`
+    await service.update(user.id, {recoveryToken: token})
+    const mail = {
+      from: config.emailUser, // sender address
+      to: `${user.email}`, // list of receivers
+      subject: "Email para recuperar contraseña", // Subject line
+      html: `<p>Ingresa a este link => <a href="${link}">LINK</a></p>`,
+    }
+    const rta = await this.sendMail(mail);
+    return rta;
+  }
+
+  async sendMail(infoMail){
     const transporter = nodemailer.createTransport({
       host: 'smtp.gmail.com',
       port: 465,
@@ -49,17 +64,10 @@ class AuthService {
           pass: config.emailPassword
       }
     });
-    const info = await transporter.sendMail({
-      from: config.emailUser, // sender address
-      to: `${user.email}`, // list of receivers
-      subject: "Prueba de klk ✔", // Subject line
-      text: "dime se te llego la cosa?", // plain text body
-      html: "<b>Prueba de klk</b>", // html body
-    });
-    console.log("Message sent: %s", info.messageId);
-    return { message: 'mail sent' }
+    const info = await transporter.sendMail(infoMail);
+    // console.log("Message sent: %s", info.messageId);
+    return { message: 'mail sent ' + info.messageId }
   }
-
 }
 
 module.exports = AuthService;
